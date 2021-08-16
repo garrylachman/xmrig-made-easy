@@ -2,22 +2,16 @@ package screens
 import com.beust.klaxon.Klaxon
 import javafx.beans.property.SimpleDoubleProperty
 import javafx.stage.FileChooser
-import models.SettingsModel
-import models.XMRigConfigModel
+import models.SingleData
 import tornadofx.*
 
 class Settings() :View() {
-    private val model = SettingsModel()
+    private val model = SingleData.settings
 
     override val root = vbox {
         text("Settings") {
             style {
                 fontSize = 22.px
-            }
-        }
-        separator {
-            style {
-                paddingBottom = 10.0
             }
         }
         form {
@@ -54,14 +48,7 @@ class Settings() :View() {
                     textfield(model.configFileName)
                     button("Load") {
                         action {
-                            var configFile = StringBuilder().append(model.workingDir.value).append("/").append(model.configFileName.value);
-                            var configModel = XMRigConfigModel(configFile.toString())
-                            println(configModel.item)
-                            println(Klaxon().toJsonString(configModel.item))
-                            println(configModel.item.api.id)
-                            //configModel.item.api.id = "new ID"
-                            println(configModel.item.api.id)
-                            configModel.commit()
+                            model.commit()
                         }
                     }
                 }

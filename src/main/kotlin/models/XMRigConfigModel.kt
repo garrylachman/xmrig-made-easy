@@ -2,7 +2,11 @@ package models
 
 import com.beust.klaxon.Json
 import com.beust.klaxon.Klaxon
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.beans.property.SimpleStringProperty
 import tornadofx.ItemViewModel
+import tornadofx.rebind
 import tornadofx.rebindOnChange
 import java.io.File
 
@@ -70,25 +74,81 @@ data class XMRigConfig(
 )
 
 
+class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
 
-class XMRigConfigModel(file: String) : ItemViewModel<XMRigConfig>() {
+    var jsonFileName: String = "";
 
-    val jsonFileName: String = file
+    val autosaveProp = bind { SimpleBooleanProperty(item?.autosave, "") }
+    val backgroundProp = bind { SimpleBooleanProperty(item?.background, "") }
+    val titleProp = bind { SimpleBooleanProperty(item?.title, "") }
+    val colorsProp = bind { SimpleBooleanProperty(item?.colors, "") }
+    val donateLevelProp = bind { SimpleIntegerProperty(item?.donateLevel, "") }
+    val donateOverProxyProp = bind { SimpleIntegerProperty(item?.donateOverProxy, "") }
+    val dmiProp = bind { SimpleBooleanProperty(item?.dmi, "") }
+    val retriesProp = bind { SimpleIntegerProperty(item?.retries, "") }
+    val retryPauseProp = bind { SimpleIntegerProperty(item?.retryPause, "") }
+    val sysLogProp = bind { SimpleBooleanProperty(item?.sysLog, "") }
+    val userAgentProp = bind { SimpleStringProperty(item?.userAgent, "") }
+    val verboseProp = bind { SimpleIntegerProperty(item?.verbose, "") }
+    val watchProp = bind { SimpleBooleanProperty(item?.watch, "") }
+    val pauseOnBatteryProp = bind { SimpleBooleanProperty(item?.pauseOnBattery, "") }
+    val pauseOnActiveProp = bind { SimpleBooleanProperty(item?.pauseOnActive, "") }
 
     init {
-        println(jsonFileName)
-        if (isFileExists(jsonFileName)) {
+        item = XMRigConfig()
+        rebindOnChange(itemProperty)
+    }
+
+    fun setFile(file: String) {
+        jsonFileName = file
+        if (jsonFileName != "" && isFileExists(jsonFileName)) {
             val fileContent: String = readFileDirectlyAsText(jsonFileName);
             item = Klaxon().parse<XMRigConfig>(fileContent)
-        } else {
-            item = XMRigConfig()
         }
-        rebindOnChange(itemProperty)
-        commit()
+
+        autosaveProp.value = item.autosave
+        backgroundProp.value = item.background
+        titleProp.value = item.title
+        colorsProp.value = item.colors
+        donateLevelProp.value = item.donateLevel
+        donateOverProxyProp.value = item.donateOverProxy
+        dmiProp.value = item.dmi
+        retriesProp.value = item.retries
+        retryPauseProp.value = item.retryPause
+        sysLogProp.value = item.sysLog
+        userAgentProp.value = item.userAgent
+        verboseProp.value = item.verbose
+        watchProp.value = item.watch
+        pauseOnBatteryProp.value = item.pauseOnBattery
+        pauseOnActiveProp.value = item.pauseOnActive
+
+
+
     }
 
     override fun onCommit() {
+        if (jsonFileName == "") {
+            return;
+        }
         println("on Commit")
+
+        with (item) {
+            autosave = autosaveProp.value
+            background = backgroundProp.value
+            title = titleProp.value
+            colors = colorsProp.value
+            donateLevel = donateLevelProp.value
+            donateOverProxy = donateOverProxyProp.value
+            dmi = dmiProp.value
+            retries = retriesProp.value
+            retryPause = retryPauseProp.value
+            sysLog = sysLogProp.value
+            userAgent = userAgentProp.value
+            verbose = verboseProp.value
+            watch = watchProp.value
+            pauseOnBattery = pauseOnBatteryProp.value
+            pauseOnActive = pauseOnActiveProp.value
+        }
         println(Klaxon().toJsonString(item))
         File(jsonFileName).writeText(Klaxon().toJsonString(item))
     }
