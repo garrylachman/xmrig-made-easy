@@ -5,45 +5,17 @@ import com.beust.klaxon.Klaxon
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
+import models.config.sections.*
 import tornadofx.ItemViewModel
 import tornadofx.rebind
 import tornadofx.rebindOnChange
 import java.io.File
 
-data class XMRigConfigApi(
-    var id: String? = null,
-    @Json(name = "worker-id")
-    var workerId: String? = null
-)
-
-data class XMRigConfigHttp(
-    var enabled: Boolean = false,
-    var host:String = "127.0.0.1",
-    var port: Int = 8080,
-    @Json(name = "access-token")
-    var accessToken: String? = null,
-    var restricted: Boolean = true
-)
-
-data class XMRigConfigRandomX(
-    @Json (name = "init")
-    var initRandomX: Int = -1,
-    @Json(name = "init-avx2")
-    var initAvx2: Int = -1,
-    var mode: String = "auto",
-    @Json(name = "1gb-pages")
-    var oneGBPages: Boolean = false,
-    var rdmsr: Boolean = true,
-    var wrmsr: Boolean = true,
-    var cache_qos: Boolean = false,
-    var numa: Boolean = true,
-    var scratchpad_prefetch_mode: Int = 1
-)
-
 data class XMRigConfig(
     var api: XMRigConfigApi = XMRigConfigApi(),
     var http: XMRigConfigHttp = XMRigConfigHttp(),
     var randomx: XMRigConfigRandomX = XMRigConfigRandomX(),
+    var cpu: XMRigConfigCPU = XMRigConfigCPU(),
     var autosave: Boolean = true,
     var background: Boolean = false,
     var colors: Boolean = true,
@@ -73,7 +45,6 @@ data class XMRigConfig(
     var pauseOnActive: Boolean = false
 )
 
-
 class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
 
     var jsonFileName: String = "";
@@ -84,6 +55,9 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
     val colorsProp = bind { SimpleBooleanProperty(item?.colors, "") }
     val donateLevelProp = bind { SimpleIntegerProperty(item?.donateLevel, "") }
     val donateOverProxyProp = bind { SimpleIntegerProperty(item?.donateOverProxy, "") }
+    val logFileProp = bind { SimpleStringProperty(item?.logFile, "") }
+    val printTimeProp = bind { SimpleIntegerProperty(item?.printTime, "") }
+    val healthPrintTimeProp = bind { SimpleIntegerProperty(item?.healthPrintTime, "") }
     val dmiProp = bind { SimpleBooleanProperty(item?.dmi, "") }
     val retriesProp = bind { SimpleIntegerProperty(item?.retries, "") }
     val retryPauseProp = bind { SimpleIntegerProperty(item?.retryPause, "") }
@@ -94,8 +68,17 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
     val pauseOnBatteryProp = bind { SimpleBooleanProperty(item?.pauseOnBattery, "") }
     val pauseOnActiveProp = bind { SimpleBooleanProperty(item?.pauseOnActive, "") }
 
+    lateinit var apiModel:XMRigConfigApiModel
+    lateinit var httpModel:XMRigConfigHttpModel
+    lateinit var randomXModel:XMRigConfigRandomXModel
+    lateinit var cpuModel:XMRigConfigCPUModel
+
     init {
         item = XMRigConfig()
+        apiModel = XMRigConfigApiModel(item.api)
+        httpModel = XMRigConfigHttpModel(item.http)
+        randomXModel = XMRigConfigRandomXModel(item.randomx)
+        cpuModel = XMRigConfigCPUModel(item.cpu)
         rebindOnChange(itemProperty)
     }
 
@@ -112,6 +95,9 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
         colorsProp.value = item.colors
         donateLevelProp.value = item.donateLevel
         donateOverProxyProp.value = item.donateOverProxy
+        logFileProp.value = item.logFile
+        printTimeProp.value = item.printTime
+        healthPrintTimeProp.value = item.healthPrintTime
         dmiProp.value = item.dmi
         retriesProp.value = item.retries
         retryPauseProp.value = item.retryPause
@@ -122,7 +108,10 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
         pauseOnBatteryProp.value = item.pauseOnBattery
         pauseOnActiveProp.value = item.pauseOnActive
 
-
+        apiModel = XMRigConfigApiModel(item.api)
+        httpModel = XMRigConfigHttpModel(item.http)
+        randomXModel = XMRigConfigRandomXModel(item.randomx)
+        cpuModel = XMRigConfigCPUModel(item.cpu)
 
     }
 
@@ -139,6 +128,9 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
             colors = colorsProp.value
             donateLevel = donateLevelProp.value
             donateOverProxy = donateOverProxyProp.value
+            logFile = logFileProp.value
+            printTime = printTimeProp.value
+            healthPrintTime = healthPrintTimeProp.value
             dmi = dmiProp.value
             retries = retriesProp.value
             retryPause = retryPauseProp.value
@@ -148,7 +140,13 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
             watch = watchProp.value
             pauseOnBattery = pauseOnBatteryProp.value
             pauseOnActive = pauseOnActiveProp.value
+            api = apiModel.item
         }
+        apiModel.commit()
+        httpModel.commit()
+        randomXModel.commit()
+        cpuModel.commit()
+
         println(Klaxon().toJsonString(item))
         File(jsonFileName).writeText(Klaxon().toJsonString(item))
     }
