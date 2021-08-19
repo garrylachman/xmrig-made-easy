@@ -3,10 +3,7 @@ package screens
 import javafx.geometry.Pos
 import javafx.scene.layout.Border
 import models.SingleData
-import screens.configuration.sections.APISection
-import screens.configuration.sections.LoggingSection
-import screens.configuration.sections.MiscSection
-import screens.configuration.sections.RandomXSection
+import screens.configuration.sections.*
 import tornadofx.*
 
 class Configuration : View("Configuration") {
@@ -15,6 +12,7 @@ class Configuration : View("Configuration") {
     val loggingSection = LoggingSection(configModel)
     val apiSection = APISection(configModel)
     val randomXSection = RandomXSection(configModel)
+    val cpuSection = CPUSection(configModel)
 
     override val root = scrollpane(fitToWidth = true) {
         edgeToEdge = true
@@ -24,6 +22,7 @@ class Configuration : View("Configuration") {
             add(loggingSection)
             add(apiSection)
             add(randomXSection)
+            add(cpuSection)
         }
     }
 

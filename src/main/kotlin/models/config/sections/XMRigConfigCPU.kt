@@ -1,6 +1,7 @@
 package models.config.sections
 
 import com.beust.klaxon.Json
+import helpers.MixedTypes
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
@@ -13,7 +14,7 @@ data class XMRigConfigCPU(
     @Json(name = "huge-pages-jit")
     var hugePagesJit: Boolean = false,
     @Json(name = "hw-aes")
-    var hwAes: Boolean? = null,
+    var hwAes: Any? = null,
     var priority: Int? = null,
     @Json(name = "memory-pool")
     var memoryPool: Boolean = false,
@@ -33,7 +34,7 @@ class XMRigConfigCPUModel(data:XMRigConfigCPU? = null) : ItemViewModel<XMRigConf
     val enabledProp = bind { SimpleBooleanProperty(item.enabled, "") }
     val hugePagesProp = bind { SimpleBooleanProperty(item.hugePages, "") }
     val hugePagesJitProp = bind { SimpleBooleanProperty(item.hugePagesJit, "") }
-    val hwAesProp = bind { SimpleBooleanProperty(item?.hwAes, "") }
+    val hwAesProp = bind { SimpleStringProperty(item?.hwAes, "") }
     val priorityProp = bind { SimpleIntegerProperty(item?.priority, "") }
     val memoryPoolProp = bind { SimpleBooleanProperty(item.memoryPool, "") }
     val yieldProp = bind { SimpleBooleanProperty(item.yield, "") }
@@ -54,13 +55,13 @@ class XMRigConfigCPUModel(data:XMRigConfigCPU? = null) : ItemViewModel<XMRigConf
         enabledProp.value = item.enabled
         hugePagesProp.value = item.hugePages
         hugePagesJitProp.value = item.hugePagesJit
-        hwAesProp.value = item.hwAes
+        hwAesProp.value = MixedTypes.mixedTypeToStringAutoDetect(item.hwAes)
         priorityProp.value = item.priority
         memoryPoolProp.value = item.memoryPool
         yieldProp.value = item.yield
         maxThreadsHintProp.value = item.maxThreadsHint
-        asmProp.value = item.asm.toString()
-        argon2ImplProp.value = item.argon2Impl
+        asmProp.value =  MixedTypes.mixedTypeToString(item.asm)
+        argon2ImplProp.value = MixedTypes.mixedTypeToStringAutoDetect(item.argon2Impl)
         astrobwtMaxSizeProp.value = item.astrobwtMaxSize
         astrobwtAvx2Prop.value = item.astrobwtAvx2
     }
@@ -70,19 +71,13 @@ class XMRigConfigCPUModel(data:XMRigConfigCPU? = null) : ItemViewModel<XMRigConf
             enabled = enabledProp.value
             hugePages = hugePagesProp.value
             hugePagesJit = hugePagesJitProp.value
-            hwAes = hwAesProp.value
+            hwAes =  MixedTypes.stringToMixedType(hwAesProp.value) as Any
             priority = priorityProp.value
             memoryPool = memoryPoolProp.value
             `yield` = yieldProp.value
             maxThreadsHint = maxThreadsHintProp.value
-            asm = if (asmProp.value == "true") {
-                true
-            } else if (asmProp.value == "false") {
-                false
-            } else {
-                asmProp.value
-            }
-            argon2Impl = argon2ImplProp.value
+            asm =  MixedTypes.stringToMixedType(asmProp.value) as Any
+            argon2Impl = MixedTypes.stringToMixedType(argon2ImplProp.value) as String
             astrobwtMaxSize = astrobwtMaxSizeProp.value
             astrobwtAvx2 = astrobwtAvx2Prop.value
         }
