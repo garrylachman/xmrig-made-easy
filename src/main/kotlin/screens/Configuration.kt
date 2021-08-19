@@ -13,6 +13,7 @@ class Configuration : View("Configuration") {
     val apiSection = APISection(configModel)
     val randomXSection = RandomXSection(configModel)
     val cpuSection = CPUSection(configModel)
+    val networkSection = NetworkSection(configModel)
 
     override val root = scrollpane(fitToWidth = true) {
         edgeToEdge = true
@@ -23,6 +24,7 @@ class Configuration : View("Configuration") {
             add(apiSection)
             add(randomXSection)
             add(cpuSection)
+            add(networkSection)
         }
     }
 

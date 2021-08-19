@@ -16,14 +16,22 @@ data class XMRigConfig(
     var http: XMRigConfigHttp = XMRigConfigHttp(),
     var randomx: XMRigConfigRandomX = XMRigConfigRandomX(),
     var cpu: XMRigConfigCPU = XMRigConfigCPU(),
-    var autosave: Boolean = true,
-    var background: Boolean = false,
-    var colors: Boolean = true,
-    var title: Boolean = true,
+    // Network
+    var retries: Int = 5,
+    @Json(name = "retry-pause")
+    var retryPause: Int = 5,
+    @Json(name = "user-agent")
+    var userAgent: String? = null,
     @Json(name = "donate-level")
     var donateLevel: Int = 1,
     @Json(name = "donate-over-proxy")
     var donateOverProxy: Int = 1,
+    var tls: Boolean = false,
+
+    var autosave: Boolean = true,
+    var background: Boolean = false,
+    var colors: Boolean = true,
+    var title: Boolean = true,
     @Json(name = "log-file")
     var logFile: String? = null,
     @Json(name = "print-time")
@@ -31,12 +39,7 @@ data class XMRigConfig(
     @Json(name = "health-print-time")
     var healthPrintTime: Int = 60,
     var dmi: Boolean = true,
-    var retries: Int = 5,
-    @Json(name = "retry-pause")
-    var retryPause: Int = 5,
     var sysLog: Boolean = false,
-    @Json(name = "user-agent")
-    var userAgent: String? = null,
     var verbose: Int = 0,
     var watch: Boolean = true,
     @Json(name = "pause-on-battery")
@@ -67,6 +70,7 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
     val watchProp = bind { SimpleBooleanProperty(item?.watch, "") }
     val pauseOnBatteryProp = bind { SimpleBooleanProperty(item?.pauseOnBattery, "") }
     val pauseOnActiveProp = bind { SimpleBooleanProperty(item?.pauseOnActive, "") }
+    val tlsProp = bind { SimpleBooleanProperty(item?.tls, "") }
 
     lateinit var apiModel:XMRigConfigApiModel
     lateinit var httpModel:XMRigConfigHttpModel
@@ -107,6 +111,7 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
         watchProp.value = item.watch
         pauseOnBatteryProp.value = item.pauseOnBattery
         pauseOnActiveProp.value = item.pauseOnActive
+        tlsProp.value = item.tls
 
         apiModel = XMRigConfigApiModel(item.api)
         httpModel = XMRigConfigHttpModel(item.http)
@@ -140,7 +145,12 @@ class XMRigConfigModel() : ItemViewModel<XMRigConfig>() {
             watch = watchProp.value
             pauseOnBattery = pauseOnBatteryProp.value
             pauseOnActive = pauseOnActiveProp.value
+            tls = tlsProp.value
             api = apiModel.item
+            http = httpModel.item
+            randomx = randomXModel.item
+            cpu = cpuModel.item
+
         }
         apiModel.commit()
         httpModel.commit()
