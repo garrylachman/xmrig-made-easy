@@ -1,6 +1,6 @@
 {
   "name": "xmrig-made-easy",
-  "productName": "XMRig Made Easy",
+  "productName": "xmrig-made-easy",
   "version": "0.0.1",
   "scripts": {
     "build": "concurrently \"yarn build:main\" \"yarn build:renderer\"",
@@ -31,7 +31,7 @@
     ]
   },
   "build": {
-    "productName": "XMRig Made Easy",
+    "productName": "xmrig-made-easy",
     "appId": "org.erb.XMRigMadeEasy",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",

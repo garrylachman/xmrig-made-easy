@@ -1,6 +1,6 @@
 {
   "name": "xmrig-made-easy",
-  "productName": "XMRig Made Easy",
+  "productName": "xmrig-made-easy",
   "version": "0.0.1",
   "main": "./dist/main/main.js",
   "author": {
