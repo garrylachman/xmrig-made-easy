@@ -1,0 +1,31 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+
+@import '~daisyui/dist/full';
+@import '~tailwindcss/dist/tailwind.min';
+
+
+.card {
+  break-after: avoid;
+  page-break-inside: avoid;
+}
+
+.indicator {
+  width: auto !important;
+}
+
+.card.overflow-visible {
+  overflow: visible !important;
+}
+
+input[type="range" i]:disabled {
+  --range-shdw: var(--b3);
+  color: rgb(197, 197, 197);
+}
+
+td.pr-0 {
+  padding-right: 0px !important;
+}
