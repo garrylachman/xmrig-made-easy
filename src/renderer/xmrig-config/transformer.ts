@@ -31,7 +31,7 @@ export const transformKeys = (
     if (CUSTOM_MAPPING_TO_JSON[newKey]) {
       newKey = CUSTOM_MAPPING_TO_JSON[newKey];
     }
-    if (newKey[0] === "_") {
+    if (newKey[0] === "_" && newValue !== null) {
       const orgKey = newKey.slice(1);
       if (tmp[orgKey])  {
         tmp[orgKey] = newValue;

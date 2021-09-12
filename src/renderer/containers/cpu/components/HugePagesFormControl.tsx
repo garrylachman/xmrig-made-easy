@@ -40,10 +40,6 @@ export const HugePagesFormControl: React.FC<
               ])}
               {...register('_hugePages', {
                 valueAsNumber: true,
-                required: {
-                  value: true,
-                  message: 'Required.',
-                },
                 min: { value: 1, message: 'Required at least 1.' },
               })}
             />

@@ -118,7 +118,7 @@ export const openCLDefaultConfig: OpenCLConfig = {
 export const cpuDefaultConfig: CpuConfig = {
   enabled: true,
   hugePages: true,
-  _hugePages: 32768,
+  _hugePages: null,
   hugePagesJit: false,
   hwAes: null,
   priority: null,
