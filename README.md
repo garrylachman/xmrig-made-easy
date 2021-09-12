@@ -13,6 +13,12 @@ Download binaries for Windows, Linux & Mac:
 https://github.com/garrylachman/xmrig-made-easy/releases
 
 
+## Contributing
+
+If you wish to contribute to this website, please [fork it on GitHub](https://github.com/garrylachman/xmrig-made-easy), push your
+change to a named branch, then send a pull request.
+
+
 
 ## License
 Garry Lachman
